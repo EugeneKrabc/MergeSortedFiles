@@ -1,9 +1,9 @@
-package CmdArguments;
+package CmdArgumentsParser;
 import java.util.ArrayList;
 
 
-public final class CmdArguments {
-    public CmdArguments(String[] args) throws Exception{
+public final class CmdArgumentsParser {
+    public CmdArgumentsParser(String[] args) throws Exception{
         this.args = args;
         parseCmdArgs();
     }
