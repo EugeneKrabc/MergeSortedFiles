@@ -62,6 +62,9 @@ public final class CmdArguments {
     }
 
     private void getDataType(String[] args) throws Exception {
+        if (args[0].equals(args[1]))
+            throw new Exception("Wrong arguments: identical flags are not allowed");
+        
         if (args[0].equals("-s") || args[1].equals("-s")) {
             if (dataType == DataType.INTEGERS)
                 throw new Exception("Wrong date type: you should pass '-s' or '-i', not both");
