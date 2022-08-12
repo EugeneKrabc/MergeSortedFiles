@@ -16,11 +16,19 @@ public final class CmdArgumentsParser {
         return inputFiles;
     }
 
-    private enum DataType {
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    public SortType getSortType() {
+        return sortType;
+    }
+
+    public enum DataType {
         INTEGERS,
         STRINGS
     }
-    private enum SortType {
+    public enum SortType {
         ASCENDING,
         DESCENDING
     }
