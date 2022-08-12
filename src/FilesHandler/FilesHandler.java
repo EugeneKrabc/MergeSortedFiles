@@ -2,10 +2,10 @@ package FilesHandler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class FilesHandler {
-    public FilesHandler(String outputFileName, ArrayList<String> inputFileNames) throws IOException {
+    public FilesHandler(String outputFileName, LinkedList<String> inputFileNames) throws IOException {
         outputFile = new File(outputFileName);
         if (outputFile.exists() == false) {
             outputFile.createNewFile();
@@ -13,23 +13,25 @@ public class FilesHandler {
             throw new IOException("Can not write if file: " + outputFile);
         }
 
-        inputFiles = new File[inputFileNames.size()];
-        for (int i = 0; i < inputFileNames.size(); i++) {
-            inputFiles[i] = new File(inputFileNames.get(i));
-            if (inputFiles[i].canRead() == false)
-                throw new IOException("Can't open file for reading: " + inputFiles[i]);
+        inputFiles = new LinkedList<>();
+        for (String fileNameStr : inputFileNames) {
+            File file = new File(fileNameStr);
+            if (file.canRead())
+                inputFiles.add(file);
         }
+        if (inputFiles.size() == 0)
+            throw new IOException("All input files are unable to read");
     }
 
     public File getOutputFile() {
         return outputFile;
     }
     
-    public File[] getInputFiles() {
+    public LinkedList<File> getInputFiles() {
         return inputFiles;
     }
 
     private File outputFile;
-    private File[] inputFiles;
+    private LinkedList<File> inputFiles;
 
 }
