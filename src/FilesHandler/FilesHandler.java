@@ -3,6 +3,7 @@ package FilesHandler;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ArrayList;;
 
 public class FilesHandler {
     public FilesHandler(String outputFileName, LinkedList<String> inputFileNames) throws IOException {
@@ -13,7 +14,7 @@ public class FilesHandler {
             throw new IOException("Can not write if file: " + outputFile);
         }
 
-        inputFiles = new LinkedList<>();
+        inputFiles = new ArrayList<>();
         for (String fileNameStr : inputFileNames) {
             File file = new File(fileNameStr);
             if (file.canRead())
@@ -27,11 +28,11 @@ public class FilesHandler {
         return outputFile;
     }
     
-    public LinkedList<File> getInputFiles() {
+    public ArrayList<File> getInputFiles() {
         return inputFiles;
     }
 
     private File outputFile;
-    private LinkedList<File> inputFiles;
+    private ArrayList<File> inputFiles;
 
 }

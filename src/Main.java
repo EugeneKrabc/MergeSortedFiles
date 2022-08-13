@@ -2,7 +2,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 import CmdArgumentsParser.CmdArgumentsParser;
@@ -29,42 +30,48 @@ public class Main {
 
     }
 
-    private static LinkedList<File> inputFiles;
+    private static ArrayList<File> inputFiles;
     private static File outputFile;
     private static SortType sortType;
     private static DataType dataType;
     private final static int MAX_LINE_SIZE = 1;
 
-    private static void mergeSortFiles() throws Exception{
+    private static void mergeSortFiles() throws Exception {
         FileWriter outputWriter = new FileWriter(outputFile);
-        LinkedList<Scanner> inputFilesScanner = new LinkedList<>();
-        for (File inputFile : inputFiles)
-            inputFilesScanner.add(new Scanner(inputFile));
+        Scanner[] inputFileScanners = new Scanner[inputFiles.size()];
+        for (int i = 0; i < inputFiles.size(); i++)
+            inputFileScanners[i] = new Scanner(inputFiles.get(i));
         
-        int maxValue = Integer.MIN_VALUE;
-        Scanner scannerWithMaxValue = inputFilesScanner.peek();
-        while (inputFilesScanner.size() != 0) {
-            for (Scanner scanner : inputFilesScanner) {
-                if (scanner.hasNext() == false) {
-                    scanner.close();
-                    inputFilesScanner.remove(scanner);
+        int minValue = Integer.MAX_VALUE;
+        int scannerIndexWithMinValue = 0;
+        HashSet<Integer> emptyFilesIndexes = new HashSet<>();
+        String[] arrWithLastScannedValues = new String[inputFileScanners.length];
+        while (emptyFilesIndexes.size() != inputFileScanners.length) {
+            for (int i = 0; i < inputFileScanners.length; i++) {
+                if (inputFileScanners[i].hasNext() == false) {
+                    emptyFilesIndexes.add(i);
                     continue;
                 }
-                String line = scanner.findInLine(".*");
-                System.out.println("line = " + line);
-                int currentValue = Integer.valueOf(line);
-                if (currentValue > maxValue) {
-                    maxValue = currentValue;
-                    scannerWithMaxValue = scanner;
+
+                if (arrWithLastScannedValues[i] == null) {
+                    String line = inputFileScanners[i].nextLine();
+                    arrWithLastScannedValues[i] = line;
+                }
+                int currentValue = Integer.valueOf(arrWithLastScannedValues[i]);
+                if (currentValue < minValue) {
+                    minValue = currentValue;
+                    scannerIndexWithMinValue = i;
                 }
             }
-            if (inputFilesScanner.size() != 0) {
-                outputWriter.write(maxValue + "\n");
-                if (scannerWithMaxValue.hasNext())
-                    scannerWithMaxValue.nextLine();
-                maxValue = Integer.MIN_VALUE;
+            if (emptyFilesIndexes.size() != inputFileScanners.length) {
+                outputWriter.write(minValue + "\n");
+                System.out.println("Writing to out: " + minValue);
+                arrWithLastScannedValues[scannerIndexWithMinValue] = null;
+                minValue = Integer.MAX_VALUE;
             }
         }
+        for (Scanner scanner : inputFileScanners)
+            scanner.close();
         outputWriter.close();
     }
 
@@ -72,34 +79,44 @@ public class Main {
 
 
 
-// LinkedList<BufferedReader> fileReaders = new LinkedList<>();
-// for (File file : inputFiles)
-//     fileReaders.add(new BufferedReader(new FileReader(file)));
-
-// int maxValue = Integer.MIN_VALUE;
-// BufferedReader fileWithMaxValue = fileReaders.peek();
-// while (fileReaders.size() != 0) {
-//     for (BufferedReader reader : fileReaders) {
-//         reader.mark(MAX_LINE_SIZE);
-//         String buff = reader.readLine();
-//         System.out.println("Buff = " + buff);
-//         if (buff == null || buff.equals("\n")) {
-//             reader.close();
-//             fileReaders.remove(reader);
-//             continue;
+//     LinkedList<Scanner> inputFilesScanner = new LinkedList<>();
+//     for (File inputFile : inputFiles)
+//         inputFilesScanner.add(new Scanner(inputFile));
+    
+//     int minValue = Integer.MAX_VALUE;
+//     int scannerWithMinValue = 0;
+//     int emptyScannerIndex = -1;
+//     String[] arrayWithLastScannedValues = new String[inputFilesScanner.size()];
+//     while (inputFilesScanner.size() != 0) {
+//         for (int i = 0; i < inputFilesScanner.size(); i++) {
+//             if (inputFilesScanner.get(i).hasNext() == false) {
+//                 emptyScannerIndex = i;
+//                 continue;
+//             }
+//             String line = inputFilesScanner.get(i).findInLine(".*");
+//             if (line != null)
+//                 arrayWithLastScannedValues[i]
+//             System.out.println("line = " + line);
+//             int currentValue = Integer.valueOf(line);
+//             if (currentValue < minValue) {
+//                 minValue = currentValue;
+//                 scannerWithMinValue = i;
+//             }
 //         }
-
-//         int currentValue = Integer.valueOf(buff);
-//         if (currentValue > maxValue) {
-//             maxValue = currentValue;
-//             fileWithMaxValue = reader;
+//         if (inputFilesScanner.size() != 0) {
+//             outputWriter.write(minValue + "\n");
+//             System.out.println("Writing to out: " + minValue);
+//             Scanner minValScanner = inputFilesScanner.get(scannerWithMinValue);
+//             if (minValScanner.hasNext())
+//                 minValScanner.nextLine();
+//             minValue = Integer.MAX_VALUE;
 //         }
-
+//         if (emptyScannerIndex != -1) {
+//             Scanner emptyScanner = inputFilesScanner.get(emptyScannerIndex);
+//             emptyScanner.close();
+//             emptyScanner.remove();
+//             emptyScannerIndex = -1;
+//         }
 //     }
-//     writer.write(String.valueOf(maxValue) + "\n");
-//     System.out.println(String.valueOf(maxValue));
-//     maxValue = Integer.MIN_VALUE;
-//     if (fileReaders.size() != 0)
-//         fileWithMaxValue.readLine();  // Move to next line in file where we find maxValue
-// }
-// writer.close();
+//     outputWriter.close();
+//
