@@ -49,11 +49,11 @@ public class Main {
         HashSet<Integer> emptyFilesIndexes = new HashSet<>();
         String[] arrWithLastScannedValues = new String[inputFileScanners.length];
         int finalValueToWrite = 0;
-        if (inputFileScanners[0].hasNextLine()) {
-            String line = inputFileScanners[0].nextLine();
-            arrWithLastScannedValues[0] = line;
-            finalValueToWrite = getValueDependsOnDataType(line);
-        }
+        String finalStringToWrite = null;
+        if (sortType == SortType.ASCENDING)
+            finalValueToWrite = Integer.MAX_VALUE;
+        else
+            finalValueToWrite = Integer.MIN_VALUE;
         while (emptyFilesIndexes.size() != inputFileScanners.length) {
             for (int i = 0; i < inputFileScanners.length; i++) {
                 if (arrWithLastScannedValues[i] == null) {
@@ -65,15 +65,18 @@ public class Main {
                     arrWithLastScannedValues[i] = line;
                 }
                 int currentValue = getValueDependsOnDataType(arrWithLastScannedValues[i]);
-                System.out.println("Current value: " + currentValue);
                 if (compareDependsOnSortType(currentValue, finalValueToWrite)) {
                     finalValueToWrite = currentValue;
                     scannerIndexWithMinValue = i;
+                    if (dataType == DataType.STRINGS)
+                        finalStringToWrite = arrWithLastScannedValues[i];
                 }
             }
             if (emptyFilesIndexes.size() != inputFileScanners.length) {
-                outputWriter.write(finalValueToWrite + "\n");
-                System.out.println("Writing to out: " + finalValueToWrite);
+                if (dataType == DataType.STRINGS && finalStringToWrite != null)
+                    outputWriter.write(finalStringToWrite + "\n");
+                else
+                    outputWriter.write(finalValueToWrite + "\n");
                 arrWithLastScannedValues[scannerIndexWithMinValue] = null;
                 if (sortType == SortType.ASCENDING)
                     finalValueToWrite = Integer.MAX_VALUE;
