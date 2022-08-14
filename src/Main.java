@@ -72,8 +72,7 @@ public class Main {
                         emptyFilesIndexes.add(i);
                         continue;
                     }
-                    String line = inputFileScanners[i].nextLine();
-                    arrWithLastScannedValues[i] = line;
+                    arrWithLastScannedValues[i] = inputFileScanners[i].nextLine();
                 }
                 int currentValue = getValueDependsOnDataType(arrWithLastScannedValues[i]);
                 if (compareDependsOnSortType(currentValue, finalValueToWrite)) {
@@ -83,14 +82,15 @@ public class Main {
                         finalStringToWrite = arrWithLastScannedValues[i];
                 }
             }
-
             if (emptyFilesIndexes.size() != inputFileScanners.length) {
-                if (dataType == DataType.STRINGS && finalStringToWrite != null && checkLastWrittenValue(finalValueToWrite))
-                    outputWriter.write(finalStringToWrite + "\n");
-                else if (checkLastWrittenValue(finalValueToWrite))
-                    outputWriter.write(finalValueToWrite + "\n");
-                wasAtLeastOneWrite = true;
-                lastWrittenValue = finalValueToWrite;
+                if (checkLastWrittenValue(finalValueToWrite)) {
+                    if (dataType == DataType.STRINGS && finalStringToWrite != null)
+                        outputWriter.write(finalStringToWrite + "\n");
+                    else
+                        outputWriter.write(finalValueToWrite + "\n");
+                    lastWrittenValue = finalValueToWrite;
+                    wasAtLeastOneWrite = true;
+                }
                 arrWithLastScannedValues[scannerIndexWithMinValue] = null;
                 resetFinalValueToWrite();
             }
@@ -118,7 +118,8 @@ public class Main {
             finalValueToWrite = Integer.MIN_VALUE;
     }
 
-    private static boolean checkLastWrittenValue(int currentWriteValue) {  // Handle case when input files aren't sorted 
+    // This check allows to handle case when input files aren't sorted 
+    private static boolean checkLastWrittenValue(int currentWriteValue) {
         if (wasAtLeastOneWrite == false)
             return true;
         
