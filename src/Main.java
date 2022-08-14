@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 
-
 import CmdArgumentsParser.CmdArgumentsParser;
 import CmdArgumentsParser.CmdArgumentsParser.DataType;
 import CmdArgumentsParser.CmdArgumentsParser.SortType;
@@ -28,6 +27,8 @@ public class Main {
     private static int scannerIndexWithMinValue = 0;
     private static int finalValueToWrite = 0;
     private static String finalStringToWrite = null;
+    private static boolean wasAtLeastOneWrite = false;
+    private static int lastWrittenValue = 0;
 
     private static FileWriter outputWriter;
     
@@ -84,10 +85,12 @@ public class Main {
             }
 
             if (emptyFilesIndexes.size() != inputFileScanners.length) {
-                if (dataType == DataType.STRINGS && finalStringToWrite != null)
+                if (dataType == DataType.STRINGS && finalStringToWrite != null && checkLastWrittenValue(finalValueToWrite))
                     outputWriter.write(finalStringToWrite + "\n");
-                else
+                else if (checkLastWrittenValue(finalValueToWrite))
                     outputWriter.write(finalValueToWrite + "\n");
+                wasAtLeastOneWrite = true;
+                lastWrittenValue = finalValueToWrite;
                 arrWithLastScannedValues[scannerIndexWithMinValue] = null;
                 resetFinalValueToWrite();
             }
@@ -113,6 +116,17 @@ public class Main {
             finalValueToWrite = Integer.MAX_VALUE;
         else
             finalValueToWrite = Integer.MIN_VALUE;
+    }
+
+    private static boolean checkLastWrittenValue(int currentWriteValue) {  // Handle case when input files aren't sorted 
+        if (wasAtLeastOneWrite == false)
+            return true;
+        
+        if ((sortType == SortType.ASCENDING && currentWriteValue < lastWrittenValue)
+        || sortType == SortType.DESCENDING && currentWriteValue > lastWrittenValue)
+            return false;
+        else
+            return true;
     }
 
 }
