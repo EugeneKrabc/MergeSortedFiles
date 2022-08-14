@@ -1,5 +1,5 @@
 package CmdArgumentsParser;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 public final class CmdArgumentsParser {
@@ -12,7 +12,7 @@ public final class CmdArgumentsParser {
         return outputFile;
     }
 
-    public ArrayList<String> getInputFileNames() {
+    public LinkedList<String> getInputFileNames() {
         return inputFiles;
     }
 
@@ -38,7 +38,7 @@ public final class CmdArgumentsParser {
     private SortType sortType = null;
     private DataType dataType = null;
     private String outputFile;
-    private ArrayList<String> inputFiles = new ArrayList<>();
+    private LinkedList<String> inputFiles = new LinkedList<>();
 
     private void parseCmdArgs() throws Exception {
         if (args.length < 3)
