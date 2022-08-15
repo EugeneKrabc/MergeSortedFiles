@@ -6,6 +6,21 @@ import java.util.ArrayList;;
 
 public class FilesHandler {
     public FilesHandler(String outputFileName, LinkedList<String> inputFileNames) throws IOException {
+        convertFileNamesIntoFilesType(outputFileName, inputFileNames);
+    }
+
+    public File getOutputFile() {
+        return outputFile;
+    }
+    public ArrayList<File> getInputFiles() {
+        return inputFiles;
+    }
+
+    private File outputFile;
+    private ArrayList<File> inputFiles;
+
+    private void convertFileNamesIntoFilesType(String outputFileName,
+                                               LinkedList<String> inputFileNames) throws IOException {
         outputFile = new File(outputFileName);
         if (!outputFile.exists()) {
             outputFile.createNewFile();
@@ -22,15 +37,4 @@ public class FilesHandler {
         if (inputFiles.size() == 0)
             throw new IOException("All input files are unable to read");
     }
-
-    public File getOutputFile() {
-        return outputFile;
-    }
-
-    public ArrayList<File> getInputFiles() {
-        return inputFiles;
-    }
-
-    private final File outputFile;
-    private final ArrayList<File> inputFiles;
 }
