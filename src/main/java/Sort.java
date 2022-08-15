@@ -62,38 +62,30 @@ public class Sort {
     private static void mainSortingCycle() throws Exception {
         resetFinalValueToWrite();
         while (emptyFilesIndexes.size() != inputFileScanners.length) {
-            for (int i = 0; i < inputFileScanners.length; i++) {
-                if (arrWithLastScannedValues[i] == null) {
-                    if (!inputFileScanners[i].hasNext()) {
-                        emptyFilesIndexes.add(i);
-                        continue;
-                    }
-                    arrWithLastScannedValues[i] = inputFileScanners[i].nextLine();
-                    if (arrWithLastScannedValues[i].contains(" ")) {
-                        throw new Exception("Spaces in input files are not allowed");
-                    }
+            scanAllFilesToFindValue();
+            writeValueToOutput();
+        }
+    }
+
+    private static void scanAllFilesToFindValue() throws  Exception {
+        for (int i = 0; i < inputFileScanners.length; i++) {
+            if (arrWithLastScannedValues[i] == null) {
+                if (!inputFileScanners[i].hasNext()) {
+                    emptyFilesIndexes.add(i);
+                    continue;
                 }
-                int currentValue = getValueDependsOnDataType(arrWithLastScannedValues[i]);
-                if (compareDependsOnSortType(currentValue, finalValueToWrite)) {
-                    finalValueToWrite = currentValue;
-                    scannerIndexWithMinValue = i;
-                    if (dataType == DataType.STRINGS) {
-                        finalStringToWrite = arrWithLastScannedValues[i];
-                    }
+                arrWithLastScannedValues[i] = inputFileScanners[i].nextLine();
+                if (arrWithLastScannedValues[i].contains(" ")) {
+                    throw new Exception("Spaces in input files are not allowed");
                 }
             }
-            if (emptyFilesIndexes.size() != inputFileScanners.length) {
-                if (checkLastWrittenValue(finalValueToWrite)) {
-                    if (dataType == DataType.STRINGS && finalStringToWrite != null) {
-                        outputWriter.write(finalStringToWrite + "\n");
-                    } else {
-                        outputWriter.write(finalValueToWrite + "\n");
-                    }
-                    lastWrittenValue = finalValueToWrite;
-                    wasAtLeastOneWrite = true;
+            int currentValue = getValueDependsOnDataType(arrWithLastScannedValues[i]);
+            if (compareDependsOnSortType(currentValue, finalValueToWrite)) {
+                finalValueToWrite = currentValue;
+                scannerIndexWithMinValue = i;
+                if (dataType == DataType.STRINGS) {
+                    finalStringToWrite = arrWithLastScannedValues[i];
                 }
-                arrWithLastScannedValues[scannerIndexWithMinValue] = null;
-                resetFinalValueToWrite();
             }
         }
     }
@@ -123,6 +115,22 @@ public class Sort {
             finalValueToWrite = Integer.MAX_VALUE;
         } else {
             finalValueToWrite = Integer.MIN_VALUE;
+        }
+    }
+
+    private static void writeValueToOutput() throws IOException {
+        if (emptyFilesIndexes.size() != inputFileScanners.length) {
+            if (checkLastWrittenValue(finalValueToWrite)) {
+                if (dataType == DataType.STRINGS && finalStringToWrite != null) {
+                    outputWriter.write(finalStringToWrite + "\n");
+                } else {
+                    outputWriter.write(finalValueToWrite + "\n");
+                }
+                lastWrittenValue = finalValueToWrite;
+                wasAtLeastOneWrite = true;
+            }
+            arrWithLastScannedValues[scannerIndexWithMinValue] = null;
+            resetFinalValueToWrite();
         }
     }
 
