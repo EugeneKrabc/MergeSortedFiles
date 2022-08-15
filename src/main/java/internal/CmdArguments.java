@@ -31,7 +31,7 @@ public final class CmdArguments {
 
     private void parseCmdArgs() throws Exception {
         if (args.length < 3)
-            throw new Exception("Wrong number of arguments");
+            throw new Exception("Wrong number of arguments.");
 
         getDataType(args);
         getSortType(args);
