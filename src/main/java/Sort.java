@@ -12,8 +12,7 @@ public class Sort {
         try {
             CmdArguments argsData = new CmdArguments(args);
             FilesHandler files = new FilesHandler(argsData.getOutputFileName(), argsData.getInputFileNames());
-            preparetionForSorting(argsData, files);
-            mergeSortFiles();
+            mergeSortFiles(argsData, files);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -34,6 +33,19 @@ public class Sort {
 
     private static final HashSet<Integer> emptyFilesIndexes = new HashSet<>();
 
+    private static void mergeSortFiles(CmdArguments argsData, FilesHandler files) throws IOException {
+        try {
+            preparetionForSorting(argsData, files);
+            mainSortingCycle();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            for (Scanner scanner : inputFileScanners)
+                scanner.close();
+            outputWriter.close();
+        }
+    }
+
     private static void preparetionForSorting(CmdArguments argsData, FilesHandler files) throws IOException {
         ArrayList<File> inputFiles = files.getInputFiles();
         File outputFile = files.getOutputFile();
@@ -46,18 +58,6 @@ public class Sort {
             inputFileScanners[i] = new Scanner(inputFiles.get(i));
 
         arrWithLastScannedValues = new String[inputFileScanners.length];
-    }
-
-    private static void mergeSortFiles() throws IOException {
-        try {
-            mainSortingCycle();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            for (Scanner scanner : inputFileScanners)
-                scanner.close();
-            outputWriter.close();
-        }
     }
 
     private static void mainSortingCycle() throws IOException {
