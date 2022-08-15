@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 import helperclasses.*;
+import helperclasses.CmdArguments.*;
 
 public class Sort {
     public static void main(String[] args) {
@@ -46,6 +47,7 @@ public class Sort {
     private static void preparetionForSorting(CmdArguments argsData, FilesHandler files) throws IOException {
         ArrayList<File> inputFiles = files.getInputFiles();
         File outputFile = files.getOutputFile();
+
         sortType = argsData.getSortType();
         dataType = argsData.getDataType();
 
@@ -72,16 +74,18 @@ public class Sort {
                 if (compareDependsOnSortType(currentValue, finalValueToWrite)) {
                     finalValueToWrite = currentValue;
                     scannerIndexWithMinValue = i;
-                    if (dataType == DataType.STRINGS)
+                    if (dataType == DataType.STRINGS) {
                         finalStringToWrite = arrWithLastScannedValues[i];
+                    }
                 }
             }
             if (emptyFilesIndexes.size() != inputFileScanners.length) {
                 if (checkLastWrittenValue(finalValueToWrite)) {
-                    if (dataType == DataType.STRINGS && finalStringToWrite != null)
+                    if (dataType == DataType.STRINGS && finalStringToWrite != null) {
                         outputWriter.write(finalStringToWrite + "\n");
-                    else
+                    } else {
                         outputWriter.write(finalValueToWrite + "\n");
+                    }
                     lastWrittenValue = finalValueToWrite;
                     wasAtLeastOneWrite = true;
                 }
@@ -92,35 +96,40 @@ public class Sort {
     }
 
     private static int getValueDependsOnDataType(String line) {
-        if (dataType == DataType.INTEGERS)
+        if (dataType == DataType.INTEGERS) {
             return Integer.parseInt(line);
-        else
+        } else {
             return line.length();
+        }
     }
 
     private static boolean compareDependsOnSortType(int currValue, int finalValueToWrite) {
-        if (sortType == SortType.ASCENDING)
+        if (sortType == SortType.ASCENDING) {
             return currValue < finalValueToWrite;
-        else
+        } else {
             return currValue > finalValueToWrite;
+        }
     }
 
     private static void resetFinalValueToWrite() {
-        if (sortType == SortType.ASCENDING)
+        if (sortType == SortType.ASCENDING) {
             finalValueToWrite = Integer.MAX_VALUE;
-        else
+        } else {
             finalValueToWrite = Integer.MIN_VALUE;
+        }
     }
 
     // This check allows handling case when input files aren't sorted
     private static boolean checkLastWrittenValue(int currentWriteValue) {
-        if (!wasAtLeastOneWrite)
+        if (!wasAtLeastOneWrite) {
             return true;
+        }
 
         if ((sortType == SortType.ASCENDING && currentWriteValue < lastWrittenValue)
-        || sortType == SortType.DESCENDING && currentWriteValue > lastWrittenValue)
+        || sortType == SortType.DESCENDING && currentWriteValue > lastWrittenValue) {
             return false;
-        else
+        } else {
             return true;
+        }
     }
 }

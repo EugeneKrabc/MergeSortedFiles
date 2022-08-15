@@ -24,14 +24,14 @@ public final class CmdArguments {
         return sortType;
     }
 
-//    public enum SortType {
-//        ASCENDING,
-//        DESCENDING
-//    }
-//    public enum DataType {
-//        INTEGERS,
-//        STRINGS
-//    }
+    public enum SortType {
+        ASCENDING,
+        DESCENDING
+    }
+    public enum DataType {
+        INTEGERS,
+        STRINGS
+    }
     private SortType sortType;
     private DataType dataType;
     private final String[] args;
