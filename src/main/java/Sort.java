@@ -5,18 +5,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 
-import CmdArgumentsParser.CmdArgumentsParser;
-import CmdArgumentsParser.CmdArgumentsParser.DataType;
-import CmdArgumentsParser.CmdArgumentsParser.SortType;
-import FilesHandler.FilesHandler;
+import internal.*;
 
-public class Main {
+public class Sort {
     public static void main(String[] args) {
         try {
-            CmdArgumentsParser argsData = new CmdArgumentsParser(args);
+            CmdArguments argsData = new CmdArguments(args);
             FilesHandler files = new FilesHandler(argsData.getOutputFileName(), argsData.getInputFileNames());
-            preparetionForSorting(argsData, files);
-            mergeSortFiles();
+            mergeSortFiles(argsData, files);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -24,35 +20,19 @@ public class Main {
 
     private static Scanner[] inputFileScanners;
     private static String[] arrWithLastScannedValues;
-    private static int scannerIndexWithMinValue = 0;
-    private static int finalValueToWrite = 0;
-    private static String finalStringToWrite = null;
-    private static boolean wasAtLeastOneWrite = false;
-    private static int lastWrittenValue = 0;
-
+    private static int scannerIndexWithMinValue;
+    private static int finalValueToWrite;
+    private static String finalStringToWrite;
+    private static boolean wasAtLeastOneWrite;
+    private static int lastWrittenValue;
     private static FileWriter outputWriter;
-    
     private static SortType sortType;
     private static DataType dataType;
+    private static final HashSet<Integer> emptyFilesIndexes = new HashSet<>();
 
-    private static HashSet<Integer> emptyFilesIndexes = new HashSet<>();
-
-    private static void preparetionForSorting(CmdArgumentsParser argsData, FilesHandler files) throws IOException {
-        ArrayList<File> inputFiles = files.getInputFiles();
-        File outputFile = files.getOutputFile();
-        sortType = argsData.getSortType();
-        dataType = argsData.getDataType();
-
-        outputWriter = new FileWriter(outputFile);
-        inputFileScanners = new Scanner[inputFiles.size()];
-        for (int i = 0; i < inputFiles.size(); i++)
-            inputFileScanners[i] = new Scanner(inputFiles.get(i));
-        
-        arrWithLastScannedValues = new String[inputFileScanners.length];
-    }
-
-    private static void mergeSortFiles() throws IOException {
+    private static void mergeSortFiles(CmdArguments argsData, FilesHandler files) throws IOException {
         try {
+            preparetionForSorting(argsData, files);
             mainSortingCycle();
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -63,12 +43,26 @@ public class Main {
         }
     }
 
+    private static void preparetionForSorting(CmdArguments argsData, FilesHandler files) throws IOException {
+        ArrayList<File> inputFiles = files.getInputFiles();
+        File outputFile = files.getOutputFile();
+        sortType = argsData.getSortType();
+        dataType = argsData.getDataType();
+
+        outputWriter = new FileWriter(outputFile);
+        inputFileScanners = new Scanner[inputFiles.size()];
+        for (int i = 0; i < inputFiles.size(); i++)
+            inputFileScanners[i] = new Scanner(inputFiles.get(i));
+
+        arrWithLastScannedValues = new String[inputFileScanners.length];
+    }
+
     private static void mainSortingCycle() throws IOException {
         resetFinalValueToWrite();
         while (emptyFilesIndexes.size() != inputFileScanners.length) {
             for (int i = 0; i < inputFileScanners.length; i++) {
                 if (arrWithLastScannedValues[i] == null) {
-                    if (inputFileScanners[i].hasNext() == false) {
+                    if (!inputFileScanners[i].hasNext()) {
                         emptyFilesIndexes.add(i);
                         continue;
                     }
@@ -99,7 +93,7 @@ public class Main {
 
     private static int getValueDependsOnDataType(String line) {
         if (dataType == DataType.INTEGERS)
-            return Integer.valueOf(line);
+            return Integer.parseInt(line);
         else
             return line.length();
     }
@@ -118,16 +112,15 @@ public class Main {
             finalValueToWrite = Integer.MIN_VALUE;
     }
 
-    // This check allows to handle case when input files aren't sorted 
+    // This check allows handling case when input files aren't sorted
     private static boolean checkLastWrittenValue(int currentWriteValue) {
-        if (wasAtLeastOneWrite == false)
+        if (!wasAtLeastOneWrite)
             return true;
-        
+
         if ((sortType == SortType.ASCENDING && currentWriteValue < lastWrittenValue)
         || sortType == SortType.DESCENDING && currentWriteValue > lastWrittenValue)
             return false;
         else
             return true;
     }
-
 }
