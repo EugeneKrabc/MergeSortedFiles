@@ -25,12 +25,9 @@ public class Sort {
     private static String finalStringToWrite;
     private static boolean wasAtLeastOneWrite;
     private static int lastWrittenValue;
-
     private static FileWriter outputWriter;
-
     private static SortType sortType;
     private static DataType dataType;
-
     private static final HashSet<Integer> emptyFilesIndexes = new HashSet<>();
 
     private static void mergeSortFiles(CmdArguments argsData, FilesHandler files) throws IOException {
