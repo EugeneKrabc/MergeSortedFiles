@@ -69,6 +69,9 @@ public class Sort {
                         continue;
                     }
                     arrWithLastScannedValues[i] = inputFileScanners[i].nextLine();
+                    if (arrWithLastScannedValues[i].contains(" ")) {
+                        throw new Exception("Spaces in input files are not allowed");
+                    }
                 }
                 int currentValue = getValueDependsOnDataType(arrWithLastScannedValues[i]);
                 if (compareDependsOnSortType(currentValue, finalValueToWrite)) {
