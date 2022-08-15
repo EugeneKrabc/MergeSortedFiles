@@ -1,4 +1,4 @@
-package internal;
+package helperclasses;
 
 public enum DataType {
     INTEGERS,

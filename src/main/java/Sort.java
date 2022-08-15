@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 
-import internal.*;
+import helperclasses.*;
 
 public class Sort {
     public static void main(String[] args) {

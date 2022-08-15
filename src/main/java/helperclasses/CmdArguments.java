@@ -1,4 +1,4 @@
-package internal;
+package helperclasses;
 import java.util.LinkedList;
 
 public final class CmdArguments {
