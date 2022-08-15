@@ -35,7 +35,7 @@ public class Sort {
         try {
             preparetionForSorting(argsData, files);
             mainSortingCycle();
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {
             for (Scanner scanner : inputFileScanners)
@@ -44,7 +44,7 @@ public class Sort {
         }
     }
 
-    private static void preparetionForSorting(CmdArguments argsData, FilesHandler files) throws IOException {
+    private static void preparetionForSorting(CmdArguments argsData, FilesHandler files) throws Exception {
         ArrayList<File> inputFiles = files.getInputFiles();
         File outputFile = files.getOutputFile();
 
@@ -59,7 +59,7 @@ public class Sort {
         arrWithLastScannedValues = new String[inputFileScanners.length];
     }
 
-    private static void mainSortingCycle() throws IOException {
+    private static void mainSortingCycle() throws Exception {
         resetFinalValueToWrite();
         while (emptyFilesIndexes.size() != inputFileScanners.length) {
             for (int i = 0; i < inputFileScanners.length; i++) {
@@ -95,9 +95,13 @@ public class Sort {
         }
     }
 
-    private static int getValueDependsOnDataType(String line) {
+    private static int getValueDependsOnDataType(String line) throws Exception {
         if (dataType == DataType.INTEGERS) {
-            return Integer.parseInt(line);
+            try {
+                return Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                throw new Exception("Can not convert string '" + line + "' to int");
+            }
         } else {
             return line.length();
         }
